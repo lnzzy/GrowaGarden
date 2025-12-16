@@ -1,0 +1,35 @@
+local stealZone = script.Parent
+local debounce = {}
+
+stealZone.Touched:Connect(function(hit)
+	local character = hit.Parent
+	local player = game.Players:GetPlayerFromCharacter(character)
+	if not player then return end
+
+	-- Prevent spam
+	if debounce[player] then return end
+	debounce[player] = true
+
+	-- INSTANT STEAL
+	print(player.Name .. " stole instantly")
+
+	-- Mark as stolen
+	local stolen = player:FindFirstChild("HasStolen")
+	if not stolen then
+		stolen = Instance.new("BoolValue")
+		stolen.Name = "HasStolen"
+		stolen.Parent = player
+	end
+	stolen.Value = true
+
+	-- OPTIONAL: speed boost
+	local humanoid = character:FindFirstChild("Humanoid")
+	if humanoid then
+		humanoid.WalkSpeed = 22
+	end
+
+	-- Reset debounce (very fast)
+	task.delay(0.2, function()
+		debounce[player] = nil
+	end)
+end)
